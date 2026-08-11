@@ -20,14 +20,13 @@
         .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; background: linear-gradient(135deg, #0284c7, #2563eb); color: white; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn:active { transform: scale(0.98); }
         
+        #status { font-size: 14px; color: #38bdf8; margin-top: 10px; text-align: center; font-weight: 500; }
+        
         .features-list { list-style: none; margin-top: 10px; }
         .features-list li { padding: 10px 0; border-bottom: 1px solid #334155; font-size: 14px; color: #cbd5e1; display: flex; align-items: center; gap: 10px; }
         .features-list li:last-child { border-bottom: none; }
         
         .badge { background: #22c55e; color: #000; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 12px; text-transform: uppercase; }
-        
-        /* Container for Bottom Ads */
-        .ad-space { width: 100%; max-width: 480px; text-align: center; margin-top: auto; padding-top: 15px; }
     </style>
 </head>
 <body>
@@ -46,10 +45,11 @@
 
     <!-- Tool 2: Local Video to Audio Extract -->
     <div class="card">
-        <h2>🎬 Video to MP3 Converter <span class="badge">FAST</span></h2>
+        <h2>🎬 Video to Audio Extractor <span class="badge">FAST</span></h2>
         <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Select any video from gallery to extract audio:</p>
         <input type="file" id="videoInput" accept="video/*">
-        <button class="btn" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="extractAudio()">Extract Audio (MP3)</button>
+        <button class="btn" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="extractAudio()">Extract Audio & Download</button>
+        <div id="status"></div>
     </div>
 
     <!-- Highlights -->
@@ -57,8 +57,8 @@
         <h2>⚡ Why Use Urban MP3 AI?</h2>
         <ul class="features-list">
             <li>✅ 100% Free & Unlimited Usage</li>
-            <li>🚀 High-Speed Audio Extraction</li>
-            <li>🎵 HD Quality Audio Output (320kbps)</li>
+            <li>🚀 High-Speed Local Audio Extraction</li>
+            <li>🎵 Clear Audio Output</li>
             <li>🔒 Safe, Private & Secure</li>
         </ul>
     </div>
@@ -70,18 +70,84 @@
                 alert('कृपया पहले कोई लिंक पेस्ट करें!');
                 return;
             }
-            alert('Processing your link for high-speed download...');
-            // Web service redirect helper for smooth MP3 conversion
             window.open('https://cobalt.tools/', '_blank');
         }
 
-        function extractAudio() {
+        async function extractAudio() {
             let fileInput = document.getElementById('videoInput');
-            if(fileInput.files.length === 0) {
-                alert('कृपया पहले अपनी गैलरी से कोई वीडियो सेलेक्ट करें!');
+            let status = document.getElementById('status');
+            
+            if (fileInput.files.length === 0) {
+                alert('कृपया गैलरी से कोई वीडियो फ़ाइल चुनें!');
                 return;
             }
-            alert('Extracting audio... Please wait a moment.');
+
+            let file = fileInput.files[0];
+            status.innerText = "⏳ Processing video... Audio extract हो रहा है...";
+
+            try {
+                let arrayBuffer = await file.arrayBuffer();
+                let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                let audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+                // Convert AudioBuffer to WAV File
+                let wavBlob = bufferToWave(audioBuffer, audioBuffer.length);
+                let url = URL.createObjectURL(wavBlob);
+
+                // Create Auto Download Link
+                let a = document.createElement('a');
+                a.href = url;
+                a.download = file.name.replace(/\.[^/.]+$/, "") + "_audio.wav";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                status.innerText = "✅ Audio निकाला गया और डाउनलोड हो गया!";
+            } catch (error) {
+                console.error(error);
+                status.innerText = "❌ एरर: इस वीडियो फ़ाइल का ऑडियो फॉर्मेट सपोर्टेड नहीं है।";
+            }
+        }
+
+        // WAV Helper Function
+        function bufferToWave(abuffer, len) {
+            let numOfChan = abuffer.numberOfChannels,
+                length = len * numOfChan * 2 + 44,
+                buffer = new ArrayBuffer(length),
+                view = new DataView(buffer),
+                channels = [], i, sample,
+                offset = 0,
+                pos = 0;
+
+            function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+            function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+
+            setUint32(0x46464952); // "RIFF"
+            setUint32(length - 8);
+            setUint32(0x45564157); // "WAVE"
+            setUint32(0x20746d66); // "fmt " chunk
+            setUint32(16);
+            setUint16(1); // PCM
+            setUint16(numOfChan);
+            setUint32(abuffer.sampleRate);
+            setUint32(abuffer.sampleRate * 2 * numOfChan);
+            setUint16(numOfChan * 2);
+            setUint16(16);
+            setUint32(0x61746164); // "data" chunk
+            setUint32(length - pos - 4);
+
+            for (i = 0; i < abuffer.numberOfChannels; i++) channels.push(abuffer.getChannelData(i));
+
+            while (pos < length) {
+                for (i = 0; i < numOfChan; i++) {
+                    sample = Math.max(-1, Math.min(1, channels[i][offset]));
+                    sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
+                    view.setInt16(pos, sample, true);
+                    pos += 2;
+                }
+                offset++;
+            }
+            return new Blob([buffer], { type: "audio/wav" });
         }
     </script>
 
