@@ -39,7 +39,7 @@
     <!-- Tool 1: URL Downloader -->
     <div class="card">
         <h2>🔗 Downloader Helper</h2>
-        <input type="text" id="mediaUrl" placeholder="Paste Video / Music Link Here...">
+        <input type="text" id="mediaUrl" placeholder="Paste Video / Shorts Link Here...">
         <button class="btn" onclick="processDownload()">Download MP3 / Video</button>
     </div>
 
@@ -57,20 +57,22 @@
         <h2>⚡ Why Use Urban MP3 AI?</h2>
         <ul class="features-list">
             <li>✅ 100% Free & Unlimited Usage</li>
-            <li>🚀 High-Speed Local Audio Extraction</li>
-            <li>🎵 Clear Audio Output</li>
+            <li>🚀 High-Speed Audio Extraction</li>
+            <li>🎵 HD Quality Audio Output</li>
             <li>🔒 Safe, Private & Secure</li>
         </ul>
     </div>
 
     <script>
         function processDownload() {
-            let url = document.getElementById('mediaUrl').value;
+            let url = document.getElementById('mediaUrl').value.trim();
             if(!url) {
                 alert('कृपया पहले कोई लिंक पेस्ट करें!');
                 return;
             }
-            window.open('https://cobalt.tools/', '_blank');
+            // Direct Working MP3 Converter Service
+            let targetUrl = 'https://ytmp3.nu/?url=' + encodeURIComponent(url);
+            window.open(targetUrl, '_blank');
         }
 
         async function extractAudio() {
@@ -90,11 +92,9 @@
                 let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 let audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
 
-                // Convert AudioBuffer to WAV File
                 let wavBlob = bufferToWave(audioBuffer, audioBuffer.length);
                 let url = URL.createObjectURL(wavBlob);
 
-                // Create Auto Download Link
                 let a = document.createElement('a');
                 a.href = url;
                 a.download = file.name.replace(/\.[^/.]+$/, "") + "_audio.wav";
@@ -105,36 +105,25 @@
                 status.innerText = "✅ Audio निकाला गया और डाउनलोड हो गया!";
             } catch (error) {
                 console.error(error);
-                status.innerText = "❌ एरर: इस वीडियो फ़ाइल का ऑडियो फॉर्मेट सपोर्टेड नहीं है।";
+                status.innerText = "❌ एरर: इस वीडियो फ़ाइल का ऑडियो सपोर्टेड नहीं है।";
             }
         }
 
-        // WAV Helper Function
         function bufferToWave(abuffer, len) {
             let numOfChan = abuffer.numberOfChannels,
                 length = len * numOfChan * 2 + 44,
                 buffer = new ArrayBuffer(length),
                 view = new DataView(buffer),
                 channels = [], i, sample,
-                offset = 0,
-                pos = 0;
+                offset = 0, pos = 0;
 
             function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
             function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
 
-            setUint32(0x46464952); // "RIFF"
-            setUint32(length - 8);
-            setUint32(0x45564157); // "WAVE"
-            setUint32(0x20746d66); // "fmt " chunk
-            setUint32(16);
-            setUint16(1); // PCM
-            setUint16(numOfChan);
-            setUint32(abuffer.sampleRate);
-            setUint32(abuffer.sampleRate * 2 * numOfChan);
-            setUint16(numOfChan * 2);
-            setUint16(16);
-            setUint32(0x61746164); // "data" chunk
-            setUint32(length - pos - 4);
+            setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157);
+            setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan);
+            setUint32(abuffer.sampleRate); setUint32(abuffer.sampleRate * 2 * numOfChan);
+            setUint16(numOfChan * 2); setUint16(16); setUint32(0x61746164); setUint32(length - pos - 4);
 
             for (i = 0; i < abuffer.numberOfChannels; i++) channels.push(abuffer.getChannelData(i));
 
@@ -142,8 +131,7 @@
                 for (i = 0; i < numOfChan; i++) {
                     sample = Math.max(-1, Math.min(1, channels[i][offset]));
                     sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
-                    view.setInt16(pos, sample, true);
-                    pos += 2;
+                    view.setInt16(pos, sample, true); pos += 2;
                 }
                 offset++;
             }
