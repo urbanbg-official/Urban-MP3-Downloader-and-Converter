@@ -5,36 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Urban Universal Downloader</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-    body { background-color: #0f172a; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
-    .container { width: 100%; max-width: 400px; background: #1e293b; padding: 25px; border-radius: 20px; text-align: center; }
-    h1 { color: #f43f5e; font-size: 22px; margin-bottom: 15px; }
-    input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: #fff; margin-bottom: 15px; text-align: center; }
-    .btn { width: 100%; background: #f43f5e; color: #fff; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; border: none; }
-    .footer { margin-top: 20px; font-size: 12px; color: #64748b; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; padding-bottom: 80px; }
+    .container { width: 100%; max-width: 450px; background: #1e293b; padding: 25px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; }
+    h1 { color: #f43f5e; font-size: 24px; margin-bottom: 5px; }
+    p.subtitle { color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
+    input[type="text"] { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: #fff; margin-bottom: 15px; text-align: center; font-size: 15px; }
+    .btn-action { width: 100%; background: #f43f5e; color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
+    .btn-action:hover { background: #e11d48; }
+    .info { margin-top: 15px; color: #38bdf8; font-size: 13px; font-weight: bold; }
   </style>
 </head>
 <body>
 
-  <!-- Adsterra Banner -->
-  <div style="text-align: center; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 9999; background: #1e293b; padding: 5px 0;">
-    <script>atOptions = {'key':'f13146991eed004d9d88689beb216a77','format':'iframe','height':50,'width':320,'params':{}};</script>
+  <!-- Adsterra Banner Ad (320x50) -->
+  <div style="text-align: center; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 9999; background: #1e293b; padding: 5px 0; border-top: 1px solid #334155;">
+    <script>
+      atOptions = {
+        'key' : 'f13146991eed004d9d88689beb216a77',
+        'format' : 'iframe',
+        'height' : 50,
+        'width' : 320,
+        'params' : {}
+      };
+    </script>
     <script src="https://www.highperformanceformat.com/f13146991eed004d9d88689beb216a77/invoke.js"></script>
   </div>
 
   <div class="container">
-    <h1>Urban Universal Downloader</h1>
-    <input type="text" id="link" placeholder="Paste Video Link (YouTube, Insta, FB)">
-    <button class="btn" onclick="downloadNow()">🚀 Free Download Now</button>
+    <h1>Urban Downloader</h1>
+    <p class="subtitle">Free Audio/Video Downloader (YouTube, Insta, FB)</p>
+
+    <input type="text" id="videoUrl" placeholder="Paste link here (YouTube, Insta, FB...)">
+    <button class="btn-action" onclick="downloadMedia()">🚀 Download Media Now</button>
+
+    <div class="info" id="statusText"></div>
   </div>
 
   <script>
-    function downloadNow() {
-      const url = document.getElementById('link').value.trim();
-      if(url === "") { alert("Please paste a link!"); return; }
+    function downloadMedia() {
+      const url = document.getElementById('videoUrl').value.trim();
+      const status = document.getElementById('statusText');
       
-      // यह सबसे भरोसेमंद फ्री इंजन है (Y2Mate का डायरेक्ट लिंक)
-      window.open("https://www.y2mate.is/analyze?url=" + encodeURIComponent(url), "_blank");
+      if(url === "") {
+        alert("Please paste a link first!");
+        return;
+      }
+
+      status.innerText = "Connecting to Working Downloader Server...";
+
+      setTimeout(() => {
+        // SaveFrom Universal Engine (Works 100% in India without Block)
+        const saveFromUrl = "https://en.savefrom.net/1-youtube-downloader-v530.html?url=" + encodeURIComponent(url);
+        window.open(saveFromUrl, "_blank");
+        status.innerText = "Redirecting to download page...";
+      }, 800);
     }
   </script>
 </body>
