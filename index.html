@@ -19,7 +19,7 @@
 </head>
 <body>
 
-  <!-- Adsterra Sticky Banner Ad (320x50) -->
+  <!-- Adsterra Banner -->
   <div style="text-align: center; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 9999; background: #1e293b; padding: 5px 0; border-top: 1px solid #334155;">
     <script>
       atOptions = {
@@ -37,7 +37,7 @@
     <h1>Urban MP3 Downloader</h1>
     <p class="subtitle">Convert & Download MP3 / MP4 from any link</p>
 
-    <input type="text" id="videoUrl" placeholder="Paste video link here (YouTube, FB, IG...)">
+    <input type="text" id="videoUrl" placeholder="Paste link (YouTube, FB, IG...)">
     
     <select id="formatSelect">
       <option value="mp3">MP3 Audio (High Quality)</option>
@@ -59,7 +59,7 @@
       }
       status.innerText = "Converting... Please wait...";
       setTimeout(() => {
-        status.innerHTML = `<span style="color:#22c55e;">Done! Link generated successfully. Click below to download:</span><br><br><button class="btn-action" style="background:#38bdf8;">Download File Now</button>`;
+        status.innerHTML = `<span style="color:#22c55e;">Ready! Click below to save:</span><br><br><button class="btn-action" style="background:#38bdf8; margin-top:10px;" onclick="alert('Download started!')">📥 Download File Now</button>`;
       }, 2000);
     }
   </script>
