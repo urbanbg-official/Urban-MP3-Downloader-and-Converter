@@ -5,50 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Urban Universal Downloader</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
     body { background-color: #0f172a; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
-    .container { width: 100%; max-width: 500px; background: #1e293b; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; }
-    h1 { color: #f43f5e; font-size: 24px; margin-bottom: 5px; }
-    input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: #fff; margin-top: 20px; text-align: center; }
-    .btn { width: 100%; background: #f43f5e; color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; }
-    .btn:hover { background: #e11d48; }
-    .note { margin-top: 20px; color: #94a3b8; font-size: 13px; }
+    .container { width: 100%; max-width: 400px; background: #1e293b; padding: 25px; border-radius: 20px; text-align: center; }
+    h1 { color: #f43f5e; font-size: 22px; margin-bottom: 15px; }
+    input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: #fff; margin-bottom: 15px; text-align: center; }
+    .btn { width: 100%; background: #f43f5e; color: #fff; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; border: none; }
+    .footer { margin-top: 20px; font-size: 12px; color: #64748b; }
   </style>
 </head>
 <body>
 
   <!-- Adsterra Banner -->
-  <div style="text-align: center; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 9999; background: #1e293b; padding: 5px 0; border-top: 1px solid #334155;">
+  <div style="text-align: center; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 9999; background: #1e293b; padding: 5px 0;">
     <script>atOptions = {'key':'f13146991eed004d9d88689beb216a77','format':'iframe','height':50,'width':320,'params':{}};</script>
     <script src="https://www.highperformanceformat.com/f13146991eed004d9d88689beb216a77/invoke.js"></script>
   </div>
 
   <div class="container">
     <h1>Urban Universal Downloader</h1>
-    <p style="color:#94a3b8; margin-top:10px;">Paste link from YouTube, Insta, FB, etc.</p>
-    
-    <input type="text" id="link" placeholder="Paste URL here...">
-    <button class="btn" onclick="startConvert()">🚀 Get Download Options</button>
-    
-    <div id="result" class="note"></div>
+    <input type="text" id="link" placeholder="Paste Video Link (YouTube, Insta, FB)">
+    <button class="btn" onclick="downloadNow()">🚀 Free Download Now</button>
   </div>
 
   <script>
-    function startConvert() {
+    function downloadNow() {
       const url = document.getElementById('link').value.trim();
-      const res = document.getElementById('result');
+      if(url === "") { alert("Please paste a link!"); return; }
       
-      if(url.length < 10) {
-        alert("Please paste a valid link.");
-        return;
-      }
-      
-      res.innerHTML = `
-        <p style="color:#22c55e; margin-top:15px;">Link generated successfully!</p>
-        <a href="https://snapsave.app/?url=${encodeURIComponent(url)}" target="_blank">
-          <button class="btn" style="background:#22c55e;">📥 Download Audio/Video Now</button>
-        </a>
-      `;
+      // यह सबसे भरोसेमंद फ्री इंजन है (Y2Mate का डायरेक्ट लिंक)
+      window.open("https://www.y2mate.is/analyze?url=" + encodeURIComponent(url), "_blank");
     }
   </script>
 </body>
