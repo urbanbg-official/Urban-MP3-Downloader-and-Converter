@@ -10,7 +10,7 @@
     .container { width: 100%; max-width: 500px; background: #1e293b; padding: 25px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; }
     h1 { color: #f43f5e; font-size: 24px; margin-bottom: 5px; }
     p.subtitle { color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
-    input[type="text"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; margin-bottom: 15px; }
+    input[type="text"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; margin-bottom: 15px; text-align: center; }
     select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; margin-bottom: 15px; }
     .btn-action { width: 100%; background: #f43f5e; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
     .btn-action:hover { background: #e11d48; }
@@ -19,7 +19,7 @@
 </head>
 <body>
 
-  <!-- Adsterra Banner -->
+  <!-- Adsterra Banner Ad -->
   <div style="text-align: center; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 9999; background: #1e293b; padding: 5px 0; border-top: 1px solid #334155;">
     <script>
       atOptions = {
@@ -35,32 +35,43 @@
 
   <div class="container">
     <h1>Urban MP3 Downloader</h1>
-    <p class="subtitle">Convert & Download MP3 / MP4 from any link</p>
+    <p class="subtitle">Convert & Download MP3 / MP4 from YouTube & Social Media</p>
 
-    <input type="text" id="videoUrl" placeholder="Paste link (YouTube, FB, IG...)">
+    <input type="text" id="videoUrl" placeholder="Paste YouTube Link Here...">
     
     <select id="formatSelect">
       <option value="mp3">MP3 Audio (High Quality)</option>
       <option value="mp4">MP4 Video</option>
     </select>
 
-    <button class="btn-action" onclick="startDownload()">🚀 Start Download</button>
+    <button class="btn-action" onclick="startDownload()">🚀 Convert & Download</button>
 
-    <p class="info" id="statusText">Paste link above to begin conversion.</p>
+    <p class="info" id="statusText">Paste link above and click Convert.</p>
   </div>
 
   <script>
     function startDownload() {
-      const url = document.getElementById('videoUrl').value;
+      const url = document.getElementById('videoUrl').value.trim();
       const status = document.getElementById('statusText');
+      
       if(url === "") {
-        alert("Please paste a valid link first!");
+        alert("Please paste a valid YouTube video or Shorts link first!");
         return;
       }
-      status.innerText = "Converting... Please wait...";
+
+      status.innerHTML = `<span style="color:#38bdf8;">Converting link... Please wait 2 seconds...</span>`;
+      
       setTimeout(() => {
-        status.innerHTML = `<span style="color:#22c55e;">Ready! Click below to save:</span><br><br><button class="btn-action" style="background:#38bdf8; margin-top:10px;" onclick="alert('Download started!')">📥 Download File Now</button>`;
-      }, 2000);
+        // Redirection to free audio downloader backend for genuine file generation
+        const downloadApiUrl = "https://y2mate.is/analyze?url=" + encodeURIComponent(url);
+        
+        status.innerHTML = `
+          <span style="color:#22c55e; font-weight:bold;">Link Ready!</span><br><br>
+          <a href="${downloadApiUrl}" target="_blank" style="text-decoration:none;">
+            <button class="btn-action" style="background:#38bdf8; color:#0f172a;">📥 Download MP3 File Now</button>
+          </a>
+        `;
+      }, 1500);
     }
   </script>
 </body>
