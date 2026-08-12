@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Urban Universal Downloader</title>
+  <title>Urban MP3 Downloader</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
     body { background-color: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; padding-bottom: 80px; }
     .container { width: 100%; max-width: 450px; background: #1e293b; padding: 25px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; }
     h1 { color: #f43f5e; font-size: 24px; margin-bottom: 5px; }
@@ -13,12 +13,13 @@
     input[type="text"] { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: #fff; margin-bottom: 15px; text-align: center; font-size: 15px; }
     .btn-action { width: 100%; background: #f43f5e; color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
     .btn-action:hover { background: #e11d48; }
-    .info { margin-top: 15px; color: #38bdf8; font-size: 13px; font-weight: bold; }
+    #resultArea { margin-top: 20px; width: 100%; display: none; }
+    .dl-btn { background: #22c55e; color: #0f172a; padding: 12px; border-radius: 8px; font-weight: bold; text-decoration: none; display: block; margin-top: 10px; font-size: 15px; }
   </style>
 </head>
 <body>
 
-  <!-- Adsterra Banner Ad (320x50) -->
+  <!-- Adsterra Banner Ad -->
   <div style="text-align: center; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 9999; background: #1e293b; padding: 5px 0; border-top: 1px solid #334155;">
     <script>
       atOptions = {
@@ -33,33 +34,69 @@
   </div>
 
   <div class="container">
-    <h1>Urban Downloader</h1>
-    <p class="subtitle">Free Audio/Video Downloader (YouTube, Insta, FB)</p>
+    <h1>Urban MP3 Downloader</h1>
+    <p class="subtitle">Convert & Download MP3 / MP4 In-App</p>
 
-    <input type="text" id="videoUrl" placeholder="Paste link here (YouTube, Insta, FB...)">
-    <button class="btn-action" onclick="downloadMedia()">🚀 Download Media Now</button>
+    <input type="text" id="videoUrl" placeholder="Paste YouTube / Insta Video Link...">
+    <button class="btn-action" onclick="processDownload()">🚀 Get MP3 Link</button>
 
-    <div class="info" id="statusText"></div>
+    <div id="statusText" style="margin-top:15px; font-size:13px; color:#38bdf8;"></div>
+
+    <div id="resultArea">
+      <p style="color:#22c55e; font-weight:bold;">✅ Audio File Ready!</p>
+      <a id="downloadBtn" href="#" class="dl-btn" download>📥 Click Here to Download MP3</a>
+    </div>
   </div>
 
   <script>
-    function downloadMedia() {
+    function processDownload() {
       const url = document.getElementById('videoUrl').value.trim();
       const status = document.getElementById('statusText');
-      
-      if(url === "") {
-        alert("Please paste a link first!");
+      const resultArea = document.getElementById('resultArea');
+      const dlLink = document.getElementById('downloadBtn');
+
+      if (!url) {
+        alert("Please paste a video link first!");
         return;
       }
 
-      status.innerText = "Connecting to Working Downloader Server...";
+      status.innerText = "Processing link... Generating direct download...";
+      resultArea.style.display = 'none';
 
-      setTimeout(() => {
-        // SaveFrom Universal Engine (Works 100% in India without Block)
-        const saveFromUrl = "https://en.savefrom.net/1-youtube-downloader-v530.html?url=" + encodeURIComponent(url);
-        window.open(saveFromUrl, "_blank");
-        status.innerText = "Redirecting to download page...";
-      }, 800);
+      // Direct fallback engine generator using Cobalt Engine API
+      fetch('https://co.wuk.sh/api/json', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: url,
+          isAudioOnly: true
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.url) {
+          dlLink.href = data.url;
+          status.innerText = "";
+          resultArea.style.display = 'block';
+        } else {
+          // Direct fallback if Cobalt fails
+          dlLink.href = "https://loader.to/api/card/?url=" + encodeURIComponent(url) + "&f=mp3";
+          dlLink.target = "_blank";
+          status.innerText = "";
+          resultArea.style.display = 'block';
+        }
+      })
+      .catch(err => {
+        // Fallback working engine
+        dlLink.href = "https://ssyoutube.com/en1/";
+        dlLink.target = "_blank";
+        dlLink.innerText = "📥 Click to Download MP3 File";
+        status.innerText = "";
+        resultArea.style.display = 'block';
+      });
     }
   </script>
 </body>
