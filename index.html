@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Urban Video to MP3 Audio Converter</title>
   <style>
-    body { background: #0f172a; color: #f8fafc; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+    body { background: #0f172a; color: #f8fafc; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; padding-bottom: 90px; box-sizing: border-box; }
     .card { background: #1e293b; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); width: 100%; max-width: 480px; text-align: center; }
     h1 { color: #38bdf8; margin-bottom: 5px; }
     p { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
@@ -32,6 +32,12 @@
     <a id="dlBtn" class="dl-btn" href="#">📥 Download Audio (MP3/WAV)</a>
   </div>
 
+  <!-- Adsterra Banner Ads (Fixed at Bottom) -->
+  <div style="text-align: center; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 9999; background: #1e293b; padding: 5px 0; border-top: 1px solid #334155;">
+    <script>atOptions = {'key':'f13146991eed004d9d88689beb216a77','format':'iframe','height':50,'width':320,'params':{}};</script>
+    <script src="https://www.highperformanceformat.com/f13146991eed004d9d88689beb216a77/invoke.js"></script>
+  </div>
+
   <script>
     async function extractAudio(event) {
       const file = event.target.files[0];
@@ -50,7 +56,6 @@
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const decodedAudio = await audioCtx.decodeAudioData(arrayBuffer);
 
-        // WAV/MP3 format encoding directly in browser
         const wavBlob = bufferToWave(decodedAudio, decodedAudio.length);
         const audioUrl = URL.createObjectURL(wavBlob);
 
@@ -68,7 +73,6 @@
       }
     }
 
-    // Fast In-Browser Audio Encoder
     function bufferToWave(abuffer, len) {
       let numOfChan = abuffer.numberOfChannels,
           length = len * numOfChan * 2 + 44,
